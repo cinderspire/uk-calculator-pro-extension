@@ -27,6 +27,14 @@ input:focus, select:focus { outline: none; border-color: #6B46C1; box-shadow: 0 
 .countdown .days { font-size: 48px; font-weight: 800; color: #6B46C1; }
 .countdown .label { font-size: 13px; color: #666; margin-top: 4px; }
 .countdown .name { font-size: 15px; font-weight: 700; color: #333; margin-top: 8px; }
+.cb { padding: 10px 4px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.cb:hover { opacity: 0.85; transform: scale(0.97); }
+.cb:active { transform: scale(0.93); }
+.cb.num { background: #f3f4f6; color: #1f2937; }
+.cb.op { background: #6B46C1; color: white; }
+.cb.eq { background: linear-gradient(135deg, #6B46C1, #9333EA); color: white; font-size: 16px; }
+.cb.fn { background: #e0d5ff; color: #6B46C1; font-size: 12px; }
+.cb.cm { background: #f0ebff; color: #7c3aed; font-size: 11px; }
 </style>
 </head>
 <body>
@@ -36,14 +44,56 @@ input:focus, select:focus { outline: none; border-color: #6B46C1; box-shadow: 0 
 </div>
 
 <div class="tabs">
-  <div class="tab active" data-panel="tax">Tax</div>
+  <div class="tab active" data-panel="calc">Calc</div>
+  <div class="tab" data-panel="tax">Tax</div>
   <div class="tab" data-panel="vat">VAT</div>
   <div class="tab" data-panel="convert">Convert</div>
   <div class="tab" data-panel="holiday">Holidays</div>
 </div>
 
+<!-- ADVANCED CALCULATOR -->
+<div class="panel active" id="calc">
+  <div id="calcDisplay" style="background:#1a1a2e;color:#fff;padding:12px 14px;border-radius:8px;margin-bottom:10px;min-height:60px;text-align:right;font-family:'SF Mono',monospace">
+    <div id="calcExpr" style="font-size:11px;color:#9ca3af;min-height:14px"></div>
+    <div id="calcScreen" style="font-size:28px;font-weight:700;margin-top:2px">0</div>
+  </div>
+  <div id="calcHistory" style="font-size:10px;color:#888;margin-bottom:8px;max-height:36px;overflow-y:auto"></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px">
+    <button class="cb cm" onclick="calcMC()">MC</button>
+    <button class="cb cm" onclick="calcMR()">MR</button>
+    <button class="cb cm" onclick="calcMS()">M+</button>
+    <button class="cb cm" onclick="calcMSub()">M−</button>
+    <button class="cb fn" onclick="calcPercent()">%</button>
+    <button class="cb fn" onclick="calcSqrt()">√</button>
+    <button class="cb fn" onclick="calcPow()">x²</button>
+    <button class="cb op" onclick="calcClear()">C</button>
+    <button class="cb num" onclick="calcDigit('7')">7</button>
+    <button class="cb num" onclick="calcDigit('8')">8</button>
+    <button class="cb num" onclick="calcDigit('9')">9</button>
+    <button class="cb op" onclick="calcOp('/')">÷</button>
+    <button class="cb num" onclick="calcDigit('4')">4</button>
+    <button class="cb num" onclick="calcDigit('5')">5</button>
+    <button class="cb num" onclick="calcDigit('6')">6</button>
+    <button class="cb op" onclick="calcOp('*')">×</button>
+    <button class="cb num" onclick="calcDigit('1')">1</button>
+    <button class="cb num" onclick="calcDigit('2')">2</button>
+    <button class="cb num" onclick="calcDigit('3')">3</button>
+    <button class="cb op" onclick="calcOp('-')">−</button>
+    <button class="cb num" onclick="calcDigit('0')">0</button>
+    <button class="cb num" onclick="calcDigit('.')">.</button>
+    <button class="cb eq" onclick="calcEquals()">=</button>
+    <button class="cb op" onclick="calcOp('+')">+</button>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:5px">
+    <button class="cb fn" onclick="calcFn('1/')">1/x</button>
+    <button class="cb fn" onclick="calcFn('+-')">±</button>
+    <button class="cb fn" onclick="calcBackspace()">⌫</button>
+    <button class="cb fn" onclick="calcTip()">Tip</button>
+  </div>
+</div>
+
 <!-- TAX CALCULATOR -->
-<div class="panel active" id="tax">
+<div class="panel" id="tax">
   <label>Annual Gross Salary (£)</label>
   <input type="number" id="taxSalary" placeholder="e.g. 35000">
   <label>Region</label>

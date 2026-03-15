@@ -1,3 +1,95 @@
+// ADVANCED CALCULATOR
+let calcCurrent = '0', calcPrev = '', calcOperator = '', calcReset = false, calcMemory = 0, calcHistoryArr = [];
+
+function updateCalcDisplay() {
+  document.getElementById('calcScreen').textContent = calcCurrent.length > 12 ? parseFloat(calcCurrent).toPrecision(10) : calcCurrent;
+  document.getElementById('calcExpr').textContent = calcPrev ? `${calcPrev} ${calcOperator}` : '';
+  document.getElementById('calcHistory').innerHTML = calcHistoryArr.slice(-3).map(h => `<div>${h}</div>`).join('');
+}
+
+function calcDigit(d) {
+  if (calcReset) { calcCurrent = ''; calcReset = false; }
+  if (d === '.' && calcCurrent.includes('.')) return;
+  if (calcCurrent === '0' && d !== '.') calcCurrent = d;
+  else calcCurrent += d;
+  updateCalcDisplay();
+}
+
+function calcOp(op) {
+  if (calcPrev && !calcReset) calcEquals();
+  calcPrev = calcCurrent;
+  calcOperator = op;
+  calcReset = true;
+  updateCalcDisplay();
+}
+
+function calcEquals() {
+  if (!calcPrev || calcReset) return;
+  const a = parseFloat(calcPrev), b = parseFloat(calcCurrent);
+  let result;
+  switch(calcOperator) {
+    case '+': result = a + b; break;
+    case '-': result = a - b; break;
+    case '*': result = a * b; break;
+    case '/': result = b !== 0 ? a / b : 'Error'; break;
+    default: return;
+  }
+  const opSymbol = {'+':'+','-':'−','*':'×','/':'÷'}[calcOperator];
+  calcHistoryArr.push(`${calcPrev} ${opSymbol} ${calcCurrent} = ${result}`);
+  calcCurrent = String(result);
+  calcPrev = '';
+  calcOperator = '';
+  calcReset = true;
+  updateCalcDisplay();
+}
+
+function calcClear() { calcCurrent = '0'; calcPrev = ''; calcOperator = ''; calcReset = false; updateCalcDisplay(); }
+function calcBackspace() { calcCurrent = calcCurrent.length > 1 ? calcCurrent.slice(0,-1) : '0'; updateCalcDisplay(); }
+function calcPercent() {
+  const v = parseFloat(calcCurrent);
+  if (calcPrev) { calcCurrent = String(parseFloat(calcPrev) * v / 100); }
+  else { calcCurrent = String(v / 100); }
+  calcReset = true;
+  updateCalcDisplay();
+}
+function calcSqrt() { calcCurrent = String(Math.sqrt(parseFloat(calcCurrent))); calcReset = true; updateCalcDisplay(); }
+function calcPow() { calcCurrent = String(Math.pow(parseFloat(calcCurrent), 2)); calcReset = true; updateCalcDisplay(); }
+function calcFn(fn) {
+  const v = parseFloat(calcCurrent);
+  if (fn === '1/') calcCurrent = v !== 0 ? String(1/v) : 'Error';
+  if (fn === '+-') calcCurrent = String(-v);
+  calcReset = true;
+  updateCalcDisplay();
+}
+function calcTip() {
+  const bill = parseFloat(calcCurrent);
+  if (!bill) return;
+  const tips = [10,12.5,15,20].map(p => `${p}%: £${(bill*p/100).toFixed(2)} (Total: £${(bill*(1+p/100)).toFixed(2)})`).join('\n');
+  calcHistoryArr.push(`Tip on £${bill.toFixed(2)}`);
+  document.getElementById('calcHistory').innerHTML = `<div style="font-weight:600">Tip on £${bill.toFixed(2)}:</div>` +
+    [10,12.5,15,20].map(p => `<div>${p}%: £${(bill*p/100).toFixed(2)} → £${(bill*(1+p/100)).toFixed(2)}</div>`).join('');
+}
+function calcMC() { calcMemory = 0; }
+function calcMR() { calcCurrent = String(calcMemory); calcReset = true; updateCalcDisplay(); }
+function calcMS() { calcMemory += parseFloat(calcCurrent); }
+function calcMSub() { calcMemory -= parseFloat(calcCurrent); }
+
+// Keyboard support
+document.addEventListener('keydown', (e) => {
+  const panel = document.getElementById('calc');
+  if (!panel.classList.contains('active')) return;
+  if (e.key >= '0' && e.key <= '9') calcDigit(e.key);
+  else if (e.key === '.') calcDigit('.');
+  else if (e.key === '+') calcOp('+');
+  else if (e.key === '-') calcOp('-');
+  else if (e.key === '*') calcOp('*');
+  else if (e.key === '/') { e.preventDefault(); calcOp('/'); }
+  else if (e.key === 'Enter' || e.key === '=') calcEquals();
+  else if (e.key === 'Escape') calcClear();
+  else if (e.key === 'Backspace') calcBackspace();
+  else if (e.key === '%') calcPercent();
+});
+
 // Tab switching
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
