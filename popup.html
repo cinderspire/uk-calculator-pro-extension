@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { width: 360px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f5ff; color: #333; }
+.header { background: linear-gradient(135deg, #6B46C1, #9333EA); color: white; padding: 14px 16px; text-align: center; }
+.header h1 { font-size: 16px; font-weight: 700; }
+.header p { font-size: 11px; opacity: 0.85; margin-top: 2px; }
+.tabs { display: flex; background: white; border-bottom: 2px solid #e0d5ff; }
+.tab { flex: 1; padding: 10px 4px; text-align: center; font-size: 11px; font-weight: 600; cursor: pointer; color: #666; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+.tab.active { color: #6B46C1; border-bottom-color: #6B46C1; background: #f8f5ff; }
+.tab:hover { color: #6B46C1; }
+.panel { display: none; padding: 14px 16px; }
+.panel.active { display: block; }
+label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 4px; margin-top: 10px; }
+input, select { width: 100%; padding: 8px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; }
+input:focus, select:focus { outline: none; border-color: #6B46C1; box-shadow: 0 0 0 2px rgba(107,70,193,0.15); }
+.btn { width: 100%; padding: 10px; margin-top: 12px; background: linear-gradient(135deg, #6B46C1, #9333EA); color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.btn:hover { opacity: 0.9; }
+.result { background: white; border-left: 3px solid #6B46C1; padding: 10px 12px; margin-top: 10px; border-radius: 4px; font-size: 12px; line-height: 1.6; display: none; }
+.result .big { font-size: 18px; font-weight: 700; color: #6B46C1; }
+.footer { text-align: center; padding: 10px; font-size: 11px; border-top: 1px solid #e0d5ff; }
+.footer a { color: #6B46C1; text-decoration: none; font-weight: 600; }
+.countdown { text-align: center; padding: 20px 16px; }
+.countdown .days { font-size: 48px; font-weight: 800; color: #6B46C1; }
+.countdown .label { font-size: 13px; color: #666; margin-top: 4px; }
+.countdown .name { font-size: 15px; font-weight: 700; color: #333; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>UK Calculator Pro</h1>
+  <p>Tax, VAT & Salary | 2025/26</p>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-panel="tax">Tax</div>
+  <div class="tab" data-panel="vat">VAT</div>
+  <div class="tab" data-panel="convert">Convert</div>
+  <div class="tab" data-panel="holiday">Holidays</div>
+</div>
+
+<!-- TAX CALCULATOR -->
+<div class="panel active" id="tax">
+  <label>Annual Gross Salary (£)</label>
+  <input type="number" id="taxSalary" placeholder="e.g. 35000">
+  <label>Region</label>
+  <select id="taxRegion">
+    <option value="england">England/Wales/NI</option>
+    <option value="scotland">Scotland</option>
+  </select>
+  <button class="btn" id="calcTax">Calculate Take-Home</button>
+  <div class="result" id="taxResult"></div>
+</div>
+
+<!-- VAT CALCULATOR -->
+<div class="panel" id="vat">
+  <label>Amount (£)</label>
+  <input type="number" id="vatAmount" placeholder="e.g. 100.00" step="0.01">
+  <label>VAT Rate</label>
+  <select id="vatRate">
+    <option value="20">20% (Standard)</option>
+    <option value="5">5% (Reduced)</option>
+    <option value="0">0% (Zero)</option>
+  </select>
+  <button class="btn" id="addVat">Add VAT</button>
+  <button class="btn" id="removeVat" style="margin-top:6px;background:white;color:#6B46C1;border:1px solid #6B46C1">Remove VAT</button>
+  <div class="result" id="vatResult"></div>
+</div>
+
+<!-- UNIT CONVERTER -->
+<div class="panel" id="convert">
+  <label>Value</label>
+  <input type="number" id="convVal" placeholder="Enter number" step="any">
+  <label>Convert</label>
+  <select id="convType">
+    <option value="kg_st">KG → Stone & Pounds</option>
+    <option value="st_kg">Stone → KG</option>
+    <option value="cm_in">CM → Inches</option>
+    <option value="in_cm">Inches → CM</option>
+    <option value="mi_km">Miles → KM</option>
+    <option value="km_mi">KM → Miles</option>
+    <option value="lb_kg">Pounds → KG</option>
+    <option value="kg_lb">KG → Pounds</option>
+    <option value="c_f">°C → °F</option>
+    <option value="f_c">°F → °C</option>
+    <option value="l_gal">Litres → Gallons</option>
+    <option value="gal_l">Gallons → Litres</option>
+  </select>
+  <button class="btn" id="doConvert">Convert</button>
+  <div class="result" id="convResult"></div>
+</div>
+
+<!-- BANK HOLIDAY COUNTDOWN -->
+<div class="panel" id="holiday">
+  <div class="countdown" id="holidayCountdown"></div>
+</div>
+
+<div class="footer">
+  <a href="https://ukcalculator.com" target="_blank">Full Calculators at ukcalculator.com →</a>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
