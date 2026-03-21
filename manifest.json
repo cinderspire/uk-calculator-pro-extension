@@ -7,8 +7,9 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "uk-calculator-pro@ukcalculator.com",
-      "strict_min_version": "109.0",
+      "strict_min_version": "140.0",
       "data_collection_permissions": {
+        "required": false,
         "private_browsing_allowed": false
       }
     }
@@ -27,7 +28,6 @@
     "default_title": "UK Calculator Pro"
   },
   "background": {
-    "service_worker": "background.js",
     "scripts": ["background.js"]
   },
   "homepage_url": "https://ukcalculator.com",
