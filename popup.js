@@ -16,7 +16,13 @@ function cUpdate() {
   const expr = document.getElementById('calcExpr');
   screen.textContent = cCur.length > 12 ? parseFloat(cCur).toPrecision(10) : cCur;
   expr.textContent = cPrev ? `${cPrev} ${{'+':'+','-':'−','*':'×','/':'÷'}[cOp] || cOp}` : '';
-  document.getElementById('calcHistory').innerHTML = cHist.slice(-3).map(h => '<div>' + h + '</div>').join('');
+  const histEl = document.getElementById('calcHistory');
+  histEl.textContent = '';
+  cHist.slice(-3).forEach(h => {
+    const d = document.createElement('div');
+    d.textContent = h;
+    histEl.appendChild(d);
+  });
 }
 
 // Digit buttons
@@ -83,11 +89,17 @@ document.querySelectorAll('[data-action]').forEach(btn => {
       case 'mminus': cMem -= v; break;
       case 'tip':
         if (!v) return;
-        document.getElementById('calcHistory').innerHTML =
-          '<div style="font-weight:600">Tip on £' + v.toFixed(2) + ':</div>' +
-          [10, 12.5, 15, 20].map(p =>
-            '<div>' + p + '%: £' + (v * p / 100).toFixed(2) + ' → £' + (v * (1 + p / 100)).toFixed(2) + '</div>'
-          ).join('');
+        const tipEl = document.getElementById('calcHistory');
+        tipEl.textContent = '';
+        const tipHeader = document.createElement('div');
+        tipHeader.style.fontWeight = '600';
+        tipHeader.textContent = 'Tip on \u00a3' + v.toFixed(2) + ':';
+        tipEl.appendChild(tipHeader);
+        [10, 12.5, 15, 20].forEach(p => {
+          const tipRow = document.createElement('div');
+          tipRow.textContent = p + '%: \u00a3' + (v * p / 100).toFixed(2) + ' \u2192 \u00a3' + (v * (1 + p / 100)).toFixed(2);
+          tipEl.appendChild(tipRow);
+        });
         break;
     }
   });
@@ -186,11 +198,29 @@ document.getElementById('calcTax').addEventListener('click', () => {
   const effective = ((tax + ni) / s * 100).toFixed(1);
   const r = document.getElementById('taxResult');
   r.style.display = 'block';
-  r.innerHTML = '<div class="big">£' + monthly.toLocaleString('en-GB', {minimumFractionDigits:2, maximumFractionDigits:2}) + '/month</div>' +
-    '<div>Annual take-home: £' + takeHome.toLocaleString('en-GB', {minimumFractionDigits:2}) + '</div>' +
-    '<div>Tax: £' + tax.toLocaleString('en-GB', {minimumFractionDigits:2}) + ' | NI: £' + ni.toLocaleString('en-GB', {minimumFractionDigits:2}) + '</div>' +
-    '<div>Effective rate: ' + effective + '%</div>' +
-    '<div style="margin-top:6px"><a href="https://ukcalculator.com/salary-calculator.html" target="_blank" style="color:#6B46C1;font-weight:600;text-decoration:none">Full breakdown →</a></div>';
+  r.textContent = '';
+  const taxBig = document.createElement('div');
+  taxBig.className = 'big';
+  taxBig.textContent = '\u00a3' + monthly.toLocaleString('en-GB', {minimumFractionDigits:2, maximumFractionDigits:2}) + '/month';
+  r.appendChild(taxBig);
+  const taxAnnual = document.createElement('div');
+  taxAnnual.textContent = 'Annual take-home: \u00a3' + takeHome.toLocaleString('en-GB', {minimumFractionDigits:2});
+  r.appendChild(taxAnnual);
+  const taxDetail = document.createElement('div');
+  taxDetail.textContent = 'Tax: \u00a3' + tax.toLocaleString('en-GB', {minimumFractionDigits:2}) + ' | NI: \u00a3' + ni.toLocaleString('en-GB', {minimumFractionDigits:2});
+  r.appendChild(taxDetail);
+  const taxRate = document.createElement('div');
+  taxRate.textContent = 'Effective rate: ' + effective + '%';
+  r.appendChild(taxRate);
+  const taxLink = document.createElement('div');
+  taxLink.style.marginTop = '6px';
+  const taxA = document.createElement('a');
+  taxA.href = 'https://ukcalculator.com/salary-calculator.html';
+  taxA.target = '_blank';
+  taxA.style.cssText = 'color:#6B46C1;font-weight:600;text-decoration:none';
+  taxA.textContent = 'Full breakdown \u2192';
+  taxLink.appendChild(taxA);
+  r.appendChild(taxLink);
 });
 
 // ========== VAT CALCULATOR ==========
@@ -201,9 +231,23 @@ document.getElementById('addVat').addEventListener('click', () => {
   const vat = a * rate;
   const r = document.getElementById('vatResult');
   r.style.display = 'block';
-  r.innerHTML = '<div class="big">£' + (a + vat).toFixed(2) + '</div>' +
-    '<div>Net: £' + a.toFixed(2) + ' + VAT: £' + vat.toFixed(2) + '</div>' +
-    '<div style="margin-top:6px"><a href="https://ukcalculator.com/vat-calculator.html" target="_blank" style="color:#6B46C1;font-weight:600;text-decoration:none">Full VAT calc →</a></div>';
+  r.textContent = '';
+  const addBig = document.createElement('div');
+  addBig.className = 'big';
+  addBig.textContent = '\u00a3' + (a + vat).toFixed(2);
+  r.appendChild(addBig);
+  const addDetail = document.createElement('div');
+  addDetail.textContent = 'Net: \u00a3' + a.toFixed(2) + ' + VAT: \u00a3' + vat.toFixed(2);
+  r.appendChild(addDetail);
+  const addLinkDiv = document.createElement('div');
+  addLinkDiv.style.marginTop = '6px';
+  const addA = document.createElement('a');
+  addA.href = 'https://ukcalculator.com/vat-calculator.html';
+  addA.target = '_blank';
+  addA.style.cssText = 'color:#6B46C1;font-weight:600;text-decoration:none';
+  addA.textContent = 'Full VAT calc \u2192';
+  addLinkDiv.appendChild(addA);
+  r.appendChild(addLinkDiv);
 });
 
 document.getElementById('removeVat').addEventListener('click', () => {
@@ -214,8 +258,14 @@ document.getElementById('removeVat').addEventListener('click', () => {
   const vat = a - net;
   const r = document.getElementById('vatResult');
   r.style.display = 'block';
-  r.innerHTML = '<div class="big">£' + net.toFixed(2) + '</div>' +
-    '<div>Gross: £' + a.toFixed(2) + ' − VAT: £' + vat.toFixed(2) + '</div>';
+  r.textContent = '';
+  const rmBig = document.createElement('div');
+  rmBig.className = 'big';
+  rmBig.textContent = '\u00a3' + net.toFixed(2);
+  r.appendChild(rmBig);
+  const rmDetail = document.createElement('div');
+  rmDetail.textContent = 'Gross: \u00a3' + a.toFixed(2) + ' \u2212 VAT: \u00a3' + vat.toFixed(2);
+  r.appendChild(rmDetail);
 });
 
 // ========== UNIT CONVERTER ==========
@@ -240,6 +290,21 @@ document.getElementById('doConvert').addEventListener('click', () => {
   const result = c[type] ? c[type]() : 'Unknown';
   const r = document.getElementById('convResult');
   r.style.display = 'block';
-  r.innerHTML = '<div class="big">' + (result.split('=')[1] || result) + '</div><div>' + result + '</div>' +
-    '<div style="margin-top:6px"><a href="https://ukcalculator.com/calculator-kg-to-stone.html" target="_blank" style="color:#6B46C1;font-weight:600;text-decoration:none">More converters →</a></div>';
+  r.textContent = '';
+  const convBig = document.createElement('div');
+  convBig.className = 'big';
+  convBig.textContent = (result.split('=')[1] || result).trim();
+  r.appendChild(convBig);
+  const convDetail = document.createElement('div');
+  convDetail.textContent = result;
+  r.appendChild(convDetail);
+  const convLinkDiv = document.createElement('div');
+  convLinkDiv.style.marginTop = '6px';
+  const convA = document.createElement('a');
+  convA.href = 'https://ukcalculator.com/calculator-kg-to-stone.html';
+  convA.target = '_blank';
+  convA.style.cssText = 'color:#6B46C1;font-weight:600;text-decoration:none';
+  convA.textContent = 'More converters \u2192';
+  convLinkDiv.appendChild(convA);
+  r.appendChild(convLinkDiv);
 });

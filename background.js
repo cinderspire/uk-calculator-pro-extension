@@ -74,7 +74,18 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 function showResult(msg) {
   const div = document.createElement("div");
   div.style.cssText = "position:fixed;top:20px;right:20px;z-index:999999;background:linear-gradient(135deg,#6B46C1,#9333EA);color:white;padding:16px 24px;border-radius:12px;font-family:-apple-system,sans-serif;font-size:14px;box-shadow:0 8px 32px rgba(107,70,193,0.4);white-space:pre-line;max-width:350px;animation:fadeIn 0.3s ease";
-  div.innerHTML = `<div style="font-weight:700;margin-bottom:6px">UK Calculator Pro</div>${msg}<div style="font-size:11px;margin-top:8px;opacity:0.8">ukcalculator.com</div>`;
+  const titleDiv = document.createElement("div");
+  titleDiv.style.cssText = "font-weight:700;margin-bottom:6px";
+  titleDiv.textContent = "UK Calculator Pro";
+  div.appendChild(titleDiv);
+  const msgDiv = document.createElement("div");
+  msgDiv.style.whiteSpace = "pre-line";
+  msgDiv.textContent = msg;
+  div.appendChild(msgDiv);
+  const footerDiv = document.createElement("div");
+  footerDiv.style.cssText = "font-size:11px;margin-top:8px;opacity:0.8";
+  footerDiv.textContent = "ukcalculator.com";
+  div.appendChild(footerDiv);
   document.body.appendChild(div);
   setTimeout(() => { div.style.opacity = "0"; div.style.transition = "opacity 0.5s"; setTimeout(() => div.remove(), 500); }, 4000);
 }

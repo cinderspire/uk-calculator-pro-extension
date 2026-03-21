@@ -3,7 +3,13 @@
   "name": "UK Calculator Pro - Tax, VAT & Salary",
   "version": "1.0.0",
   "description": "Quick UK tax, salary, VAT and unit calculations right in your browser. Updated for 2025/26 tax year.",
-  "permissions": ["contextMenus", "activeTab"],
+  "permissions": ["contextMenus", "activeTab", "scripting"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "uk-calculator-pro@ukcalculator.com",
+      "strict_min_version": "109.0"
+    }
+  },
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
